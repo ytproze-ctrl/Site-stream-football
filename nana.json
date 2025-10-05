@@ -6,9 +6,19 @@
       "title": "PSG vs OM",
       "date": "2025-10-12",
       "venue": "Parc des Princes",
-      "stream_url": "https://www.hesgoal.watch/hd-7",
-      "color": "color-a"
+      "stream_url": "https://exemple.com/ton-flux-video",
+      "language": "fr",
+      "quality": "HD"
     },
-  
+    {
+      "id": "match-002",
+      "title": "",
+      "date": "",
+      "venue": "",
+      "stream_url": "https://www.hesgoal.watch/hd-7",
+      "language": "es",
+      "quality": "HD"
+    }
   ]
 }
+
