@@ -1,0 +1,14 @@
+{
+  "configName": "nana",
+  "matches": [
+    {
+      "id": "match-001",
+      "title": "PSG vs OM",
+      "date": "2025-10-12",
+      "venue": "Parc des Princes",
+      "stream_url": "",
+      "color": "color-a"
+    },
+  
+  ]
+}
