@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Flux Foot - Single Player</title>
+  <style>
+    :root{
+      --bg: linear-gradient(135deg,#0f172a 0%,#07103a 100%);
+      --card1: #FF6B6B;
+      --card2: #FFD93D;
+      --card3: #6BCB77;
+      --glass: rgba(255,255,255,0.06);
+      --accent: #60a5fa;
+      --text: #e6eef8;
+      --muted: #b8c6d9;
+      --radius: 12px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:var(--text);background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px}
+    .wrap{width:100%;max-width:1100px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    h1{font-size:20px;margin:0}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+
+    .matches{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));padding:14px;border-radius:var(--radius);backdrop-filter: blur(6px);border:1px solid rgba(255,255,255,0.04)}
+    .card .title{font-weight:600;margin-bottom:6px}
+    .meta{font-size:12px;color:var(--muted);margin-bottom:10px}
+    .player-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:var(--glass);border:1px solid rgba(255,255,255,0.04);cursor:pointer}
+
+    .stream-box{margin-top:18px;border-radius:12px;overflow:hidden;background:#000;border:4px solid rgba(255,255,255,0.04);position:relative}
+    video{width:100%;height:100%;max-height:540px;background:#000;display:block}
+    .controls{padding:12px;display:flex;gap:8px;align-items:center}
+
+    .input-wrap{display:flex;gap:8px}
+    input[type=text]{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text)}
+    .tag{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px}
+
+    .status{font-size:13px;color:var(--muted)}
+
+    footer{color:var(--muted);font-size:12px;margin-top:14px}
+
+    /* color accents for cards */
+    .card.color-a{box-shadow:0 6px 24px rgba(255,107,107,0.08);border-top:4px solid var(--card1)}
+    .card.color-b{box-shadow:0 6px 24px rgba(255,217,61,0.06);border-top:4px solid var(--card2)}
+    .card.color-c{box-shadow:0 6px 24px rgba(107,203,119,0.06);border-top:4px solid var(--card3)}
+
+    .error{color:#ffb4b4}
+    @media (max-width:520px){header{flex-direction:column;align-items:flex-start;gap:12px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Flux Foot — Lecteur unique</h1>
+        <p class="lead">Une page simple — 1 flux par match. Coller un lien, vérifier et lancer. (Assurez-vous d'avoir les droits.)</p>
+      </div>
+      <div class="status" id="status">Prêt</div>
+    </header>
+
+    <main>
+      <div class="matches" id="matches">
+        <!-- Exemple de cartes (éditables). Chaque carte montre UN seul lien (comme demandé). -->
+        <div class="card color-a" data-label="PSG vs OM">
+          <div class="title">PSG vs OM</div>
+          <div class="meta">12 oct. 2025 — Parc des Princes</div>
+          <div class="input-wrap">
+            <input class="link-input" placeholder="Collez ici le lien du flux (.m3u8 / .mp4 / url player)" />
+            <button class="player-btn btn-play">Jouer</button>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+            <span class="tag">HD</span>
+            <span class="tag">Commentaire FR</span>
+          </div>
+        </div>
+
+        <div class="card color-b" data-label="Match Amical">
+          <div class="title">Match Amical</div>
+          <div class="meta">14 oct. 2025 — Stades Multiples</div>
+          <div class="input-wrap">
+            <input class="link-input" placeholder="Collez ici le lien du flux (.m3u8 / .mp4 / url player)" />
+            <button class="player-btn btn-play">Jouer</button>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+            <span class="tag">SD</span>
+            <span class="tag">No Ads</span>
+          </div>
+        </div>
+
+        <div class="card color-c" data-label="Coupe Nationale">
+          <div class="title">Coupe Nationale</div>
+          <div class="meta">20 oct. 2025 — Finale</div>
+          <div class="input-wrap">
+            <input class="link-input" placeholder="Collez ici le lien du flux (.m3u8 / .mp4 / url player)" />
+            <button class="player-btn btn-play">Jouer</button>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+            <span class="tag">Multi-cam</span>
+            <span class="tag">Payant</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stream-box" id="streamBox" style="display:none;margin-top:18px">
+        <video id="videoPlayer" controls playsinline></video>
+        <div class="controls">
+          <button id="closeBtn" class="player-btn">Fermer</button>
+          <div id="playerInfo" style="margin-left:8px;color:var(--muted)"></div>
+        </div>
+      </div>
+
+      <footer>
+        <div>Instructions rapides : collez un seul lien par carte -> "Jouer". Le lecteur tente HLS (.m3u8) puis MP4. Si le lien refuse (CORS), utilisez un proxy légal côté serveur ou hébergez le flux sur un serveur qui autorise l'accès.</div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- hls.js depuis un CDN (nécessaire pour jouer .m3u8 dans la plupart des navigateurs) -->
+  <script src="https://www.hesgoal.watch/hd-7"></script>
+  <script>
+    // Comportement : Un SEUL lecteur vidéo sur la page. Chaque carte contient UN lien. Quand on clique, on vérifie le lien (fetch HEAD si possible), on essaye HLS, sinon on bascule sur src direct.
+
+    const matches = document.getElementById('matches');
+    const streamBox = document.getElementById('streamBox');
+    const video = document.getElementById('videoPlayer');
+    const status = document.getElementById('status');
+    const playerInfo = document.getElementById('playerInfo');
+    const closeBtn = document.getElementById('closeBtn');
+
+    function setStatus(s){ status.textContent = s }
+
+    // Try to detect link type by extension
+    function guessType(url){
+      try{ const u = new URL(url); const p = u.pathname.toLowerCase(); if(p.endsWith('.m3u8')) return 'hls'; if(p.endsWith('.mp4')) return 'mp4'; }catch(e){}
+      if(url.includes('.m3u8')) return 'hls';
+      return 'unknown';
+    }
+
+    // Play logic
+    async function playLink(url, label){
+      setStatus('Vérification du lien...');
+      playerInfo.textContent = '';
+      // Try quick HEAD to check availability (may fail due to CORS)
+      let ok = false; let headErr = null;
+      try{
+        const resp = await fetch(url, {method:'HEAD'});
+        if(resp.ok) ok = true; else headErr = 'HEAD status ' + resp.status;
+      }catch(e){ headErr = e.message }
+
+      // show stream box
+      streamBox.style.display = 'block';
+      playerInfo.textContent = label + (ok? ' — accessible' : ' — non vérifié (CORS possible)');
+
+      // Choose playback method
+      const type = guessType(url);
+
+      if(type === 'hls' && Hls && Hls.isSupported()){
+        setStatus('Lecture via HLS.js...');
+        try{
+          if(window.hlsInstance){ window.hlsInstance.destroy(); window.hlsInstance = null }
+          const hls = new Hls({enableWorker:true,debug:false});
+          window.hlsInstance = hls;
+          hls.loadSource(url);
+          hls.attachMedia(video);
+          hls.on(Hls.Events.MANIFEST_PARSED, function(){ video.play().catch(()=>{}); setStatus('Lecture en cours'); });
+          hls.on(Hls.Events.ERROR, function(event,data){
+            console.warn('HLS error', data);
+            if(data && data.fatal){ setStatus('Erreur HLS: ' + data.type); }
+          });
+          return;
+        }catch(e){ console.error(e); setStatus('Erreur lors du démarrage HLS, essai direct...') }
+      }
+
+      // Fallback: try to set video.src directly
+      try{
+        video.src = url;
+        await video.play();
+        setStatus('Lecture en cours (fallback)');
+        return;
+      }catch(e){
+        console.warn('Fallback failed', e);
+        setStatus('Impossible de lire le flux directement.');
+      }
+
+      // Final fallback: open in new tab (player tiers)
+      setStatus('Ouverture dans un nouvel onglet (si lecture impossible ici)');
+      window.open(url, '_blank');
+    }
+
+    // Wire up play buttons
+    matches.querySelectorAll('.card').forEach(card => {
+      const btn = card.querySelector('.btn-play');
+      const input = card.querySelector('.link-input');
+      const label = card.dataset.label || 'Match';
+      btn.addEventListener('click', ()=>{
+        const url = input.value.trim();
+        if(!url){ setStatus('Aucun lien fourni pour «'+label+'»'); return }
+        playLink(url, label);
+      });
+    });
+
+    closeBtn.addEventListener('click', ()=>{
+      // stop playback and hide
+      if(window.hlsInstance){ window.hlsInstance.destroy(); window.hlsInstance = null }
+      video.pause(); video.removeAttribute('src'); video.load(); streamBox.style.display = 'none'; setStatus('Prêt');
+    });
+
+    // Small UX: allow pressing Enter inside input to play
+    matches.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' && e.target.classList.contains('link-input')){
+        const card = e.target.closest('.card'); card.querySelector('.btn-play').click();
+      }
+    });
+
+    // Helpful note about CORS
+    // Important: un navigateur peut bloquer la vérification HEAD ou la lecture si le serveur du flux n'autorise pas l'origine.
+    // Dans ce cas, la solution fiable est d'utiliser un service côté serveur (proxy) qui relaie le flux en ajoutant les bons headers CORS —
+    // ou mieux : héberger/servir le flux depuis un serveur configuré pour autoriser votre domaine GitHub Pages.
+
+  </script>
+</body>
+</html>
