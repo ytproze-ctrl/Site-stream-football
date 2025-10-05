@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Flux Foot - Lecteur Unique</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Flux Foot — Lecteur unique</h1>
+        <p class="lead">Une page simple — 1 flux par match. (Assurez-vous d’avoir les droits de diffusion.)</p>
+      </div>
+      <div class="status" id="status">Chargement des matchs...</div>
+    </header>
+
+    <main>
+      <div class="matches" id="matches"></div>
+
+      <div class="stream-box" id="streamBox" style="display:none;">
+        <video id="videoPlayer" controls playsinline></video>
+        <div class="controls">
+          <button id="closeBtn" class="player-btn">Fermer</button>
+          <div id="playerInfo"></div>
+        </div>
+      </div>
+
+      <footer>
+        <div>Collez un seul lien par match et cliquez sur “Jouer”. Si un flux ne se lance pas, vérifiez les droits CORS du serveur.</div>
+      </footer>
+    </main>
+  </div>
+
+  <script src="https://www.hesgoal.watch/hd-7"></script>
+  <script src="script.js"></script>
+</body>
+</html>
+
